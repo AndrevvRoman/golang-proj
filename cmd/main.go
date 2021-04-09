@@ -63,9 +63,10 @@ func countThings(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Info(err)
 	}
-	log.Info(result)
+
 	log.Info("result = ", result)
-	fmt.Fprintf(w, "4")
+	log.Info("converted = ", fmt.Sprintf("%v", result))
+	fmt.Fprintf(w, fmt.Sprintf("%v", result))
 }
 
 func main() {
