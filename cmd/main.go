@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -39,7 +40,18 @@ func countThings(w http.ResponseWriter, r *http.Request) {
 	log.Info("Request count things")
 	log.Info("Request = ", r.Body)
 	log.Info("Method = ", r.Method)
-	expression, err := govaluate.NewEvaluableExpression("2 + 3 - 1")
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading body: %v", err)
+		http.Error(w, "can't read body", http.StatusBadRequest)
+		return
+	}
+	bodyStr := string(body)
+	if len(bodyStr) == 0 {
+		fmt.Fprintf(w, "4")
+	}
+	expression, err := govaluate.NewEvaluableExpression(bodyStr)
 	if err != nil {
 		log.Info(err)
 	}
@@ -48,7 +60,7 @@ func countThings(w http.ResponseWriter, r *http.Request) {
 		log.Info(err)
 	}
 	log.Info(result)
-	// json.NewEncoder(w).Encode(expression)
+	log.Info("result = ", result)
 	fmt.Fprintf(w, "4")
 }
 
