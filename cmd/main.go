@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -15,11 +16,17 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
+	port, exists := os.LookupEnv("PORT")
+	if exists == false {
+		fmt.Printf("NO PORT")
+	}
+
+	//http.ListenAndServe(":"+port, nil)
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/api/v1/health", returnStatus200)
 	myRouter.HandleFunc("/api/v1/api/v1/arithmetic", countThings)
-	log.Fatal(http.ListenAndServe(":10000", myRouter))
+	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
 
 func returnStatus200(w http.ResponseWriter, r *http.Request) {
@@ -43,6 +50,7 @@ func countThings(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
 	fmt.Println("Rest API v2.0 - Mux Routers")
 	handleRequests()
 }
