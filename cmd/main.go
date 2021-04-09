@@ -25,7 +25,7 @@ func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/api/v1/health", returnStatus200)
-	myRouter.HandleFunc("/api/v1/api/v1/arithmetic", countThings)
+	myRouter.HandleFunc("/api/v1/arithmetic", countThings)
 	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
 
