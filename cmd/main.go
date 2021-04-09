@@ -41,7 +41,11 @@ func countThings(w http.ResponseWriter, r *http.Request) {
 	log.Info("Request = ", r.Body)
 	log.Info("Method = ", r.Method)
 
+	if r.Body == http.NoBody {
+		return
+	}
 	body, err := ioutil.ReadAll(r.Body)
+	log.Info("Readed body = ", body)
 	if err != nil {
 		log.Printf("Error reading body: %v", err)
 		http.Error(w, "can't read body", http.StatusBadRequest)
