@@ -26,7 +26,7 @@ func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/api/v1/health", returnStatus200).Methods(http.MethodHead)
-	myRouter.HandleFunc("api/v1/arithmetic", countThings).Methods(http.MethodPost)
+	myRouter.HandleFunc("/api/v1/arithmetic", countThings).Methods(http.MethodPost)
 	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
 
@@ -49,6 +49,7 @@ func countThings(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Info(result)
 	// json.NewEncoder(w).Encode(expression)
+	fmt.Fprintf(w, "4")
 }
 
 func main() {
