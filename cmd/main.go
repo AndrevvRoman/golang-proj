@@ -2,17 +2,17 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Welcome to the HomePage!")
-	fmt.Println("Endpoint Hit: homePage")
+	log.Info("Endpoint Hit: homePage")
 }
 
 func handleRequests() {
@@ -20,12 +20,12 @@ func handleRequests() {
 	if exists == false {
 		fmt.Printf("NO PORT")
 	}
-
+	log.Info("Founded port ", port)
 	//http.ListenAndServe(":"+port, nil)
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/api/v1/health", returnStatus200)
-	myRouter.HandleFunc("/api/v1/arithmetic", countThings)
+	myRouter.HandleFunc("/api/v1/health", returnStatus200).Methods(http.MethodHead)
+	myRouter.HandleFunc("/api/v1/arithmetic", countThings).Methods(http.MethodPost)
 	log.Fatal(http.ListenAndServe(":"+port, myRouter))
 }
 
@@ -35,22 +35,25 @@ func returnStatus200(w http.ResponseWriter, r *http.Request) {
 
 func countThings(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Request count things")
-	fmt.Println("Request = ", r.Body)
+	log.Info("Request count things")
+	log.Info("Request = ", r.Body)
+	log.Info("Method = ", r.Method)
 	// expression, err := govaluate.NewEvaluableExpression("2 + 3 - 1")
 	// if err != nil {
-	// 	fmt.Println(err)
+	// 	log.Info(err)
 	// }
 	// result, err := expression.Evaluate(nil)
 	// if err != nil {
-	// 	fmt.Println(err)
+	// 	log.Info(err)
 	// }
-	// fmt.Println(result)
+	// log.Info(result)
 	// json.NewEncoder(w).Encode(expression)
 }
 
 func main() {
+	// log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.Info("Rest API v2.0 - Mux Routers")
 
-	fmt.Println("Rest API v2.0 - Mux Routers")
 	handleRequests()
 }
